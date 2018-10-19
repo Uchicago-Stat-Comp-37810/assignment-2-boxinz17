@@ -64,13 +64,25 @@ compare_outcomes <- function(iteration.numbers){
     }
   }
   
-  record.compare <- data.frame(cbind(record.compare.mean, record.compare.std))
+  record.compare <- array(dim=c(loop.num, num.of.iteration))
+  
+  for (i in c(1:loop.num)){
+    for (j in c(1:num.of.iteration)){
+      record.compare[i, j] = paste("mean:", round(record.compare.mean[i, j], 3), 
+                                   "std:", round(record.compare.std[i, j], 3))
+    }
+  }
+  
+  record.compare <- data.frame(record.compare)
+  
   for (j in c(1:num.of.iteration)){
-    colnames(record.compare)[j] <- paste("mean/iteration:", iteration.numbers[j])
+    colnames(record.compare)[j] <-  paste("iteration:", iteration.numbers[j])
   }
-  for (j in (c((num.of.iteration+1):(2*num.of.iteration)))){
-    colnames(record.compare)[j] <- paste("std/iteration:", iteration.numbers[(j - num.of.iteration)])
+  
+  for (j in c(1:num.of.iteration)){
+    colnames(record.compare)[j] <-  paste("iteration:", iteration.numbers[j])
   }
+  
   for (i in c(1:loop.num)){
     rownames(record.compare)[i] <- paste("loop ", i)
   }
@@ -80,4 +92,3 @@ compare_outcomes <- function(iteration.numbers){
 
 iteration.numbers <- c(1000, 10000, 100000)
 m.compare.out <- compare_outcomes(iteration.numbers)
-View(m.compare.out)
