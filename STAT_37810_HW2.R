@@ -36,3 +36,48 @@ MHSummary(chain, burnIn, trueA, truB, trueSd)
 
 # for comparison:
 summary(lm(y~x))  # show the estimated coefficients using linear model for comparison
+
+# comparison between different iteration numbers
+compare_outcomes <- function(iteration.numbers){
+  num.of.iteration <- length(iteration.numbers)  # record the number of different iteration times
+  loop.num <- 10
+  
+  record.compare.mean <- array(dim=c(loop.num, num.of.iteration))
+  record.compare.std <- array(dim=c(loop.num, num.of.iteration))
+  
+  for (i in c(1:loop.num)){
+    startvalue <- c(1:3)
+    startvalue[1] <- runif(n=1, min=0, max=10)
+    startvalue[2] <- rnorm(n=1, sd = 5)
+    startvalue[3] <- runif(n=1, min=0, max=30)
+    
+    print(paste("This is the", i, "loop"))
+    
+    for (j in c(1:num.of.iteration)){
+      chain = run_metropolis_MCMC(startvalue, iteration.numbers[j])
+      a.mean <- mean(chain[, 1])
+      record.compare.mean[i, j] <- a.mean
+      a.std <- sd(chain[, 1])
+      record.compare.std[i, j] <- a.std
+      print(paste("For iteration times as:", iteration.numbers[j], "the mean is:", a.mean, 
+                  "The std is:", a.std))
+    }
+  }
+  
+  record.compare <- data.frame(cbind(record.compare.mean, record.compare.std))
+  for (j in c(1:num.of.iteration)){
+    colnames(record.compare)[j] <- paste("mean/iteration:", iteration.numbers[j])
+  }
+  for (j in (c((num.of.iteration+1):(2*num.of.iteration)))){
+    colnames(record.compare)[j] <- paste("std/iteration:", iteration.numbers[(j - num.of.iteration)])
+  }
+  for (i in c(1:loop.num)){
+    rownames(record.compare)[i] <- paste("loop ", i)
+  }
+  
+  return(record.compare)
+}
+
+iteration.numbers <- c(1000, 10000, 100000)
+m.compare.out <- compare_outcomes(iteration.numbers)
+View(m.compare.out)
