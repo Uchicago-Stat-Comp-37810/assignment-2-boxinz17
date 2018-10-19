@@ -1,0 +1,34 @@
+---
+title: "Accuracy Report"
+author: "Boxin"
+date: "10/18/2018"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+Some preparation work before test
+
+```{r}
+source("E:/function.R")
+
+trueA <- 5
+trueB <- 0
+trueSd <- 10
+sampleSize <- 31
+
+# create independent x-values 
+x <- (-(sampleSize-1)/2):((sampleSize-1)/2)  
+# create dependent values according to ax + b + N(0,sd)
+y <-  trueA * x + trueB + rnorm(n=sampleSize,mean=0,sd=trueSd)
+```
+
+Compare different iteration times
+
+```{r}
+# comparison between different iteration numbers
+iteration.numbers <- c(1000, 10000, 100000)
+compare_outcomes(iteration.numbers)
+```
+

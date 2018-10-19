@@ -1,1 +1,0 @@
-slopevalues <- function(x){return(likelihood(c(x, trueB, trueSd)))}  # use true value of b and sd, take a as the only varibale, return the likelihhod function depending on a

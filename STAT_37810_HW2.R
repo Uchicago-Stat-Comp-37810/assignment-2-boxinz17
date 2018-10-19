@@ -1,10 +1,4 @@
-source("E:/学习工作/硕士/software/github/local repository/assignment-2-boxinz17/Likelihood.R")
-source("E:/学习工作/硕士/software/github/local repository/assignment-2-boxinz17/slopevalues.R")
-source("E:/学习工作/硕士/software/github/local repository/assignment-2-boxinz17/prior.R")
-source("E:/学习工作/硕士/software/github/local repository/assignment-2-boxinz17/posterior.R")
-source("E:/学习工作/硕士/software/github/local repository/assignment-2-boxinz17/proposalfunction.R")
-source("E:/学习工作/硕士/software/github/local repository/assignment-2-boxinz17/run_metropolis_MCMC.R")
-source("E:/学习工作/硕士/software/github/local repository/assignment-2-boxinz17/MHsummary.R")
+source("E:/function.R")
 
 trueA <- 5  # set the true value of a to be 5
 trueB <- 0  # set the true value of b to be 0
@@ -38,57 +32,21 @@ MHSummary(chain, burnIn, trueA, truB, trueSd)
 summary(lm(y~x))  # show the estimated coefficients using linear model for comparison
 
 # comparison between different iteration numbers
-compare_outcomes <- function(iteration.numbers){
-  num.of.iteration <- length(iteration.numbers)  # record the number of different iteration times
-  loop.num <- 10
-  
-  record.compare.mean <- array(dim=c(loop.num, num.of.iteration))
-  record.compare.std <- array(dim=c(loop.num, num.of.iteration))
-  
-  for (i in c(1:loop.num)){
-    startvalue <- c(1:3)
-    startvalue[1] <- runif(n=1, min=0, max=10)
-    startvalue[2] <- rnorm(n=1, sd = 5)
-    startvalue[3] <- runif(n=1, min=0, max=30)
-    
-    print(paste("This is the", i, "loop"))
-    
-    for (j in c(1:num.of.iteration)){
-      chain = run_metropolis_MCMC(startvalue, iteration.numbers[j])
-      a.mean <- mean(chain[, 1])
-      record.compare.mean[i, j] <- a.mean
-      a.std <- sd(chain[, 1])
-      record.compare.std[i, j] <- a.std
-      print(paste("For iteration times as:", iteration.numbers[j], "the mean is:", a.mean, 
-                  "The std is:", a.std))
-    }
-  }
-  
-  record.compare <- array(dim=c(loop.num, num.of.iteration))
-  
-  for (i in c(1:loop.num)){
-    for (j in c(1:num.of.iteration)){
-      record.compare[i, j] = paste("mean:", round(record.compare.mean[i, j], 3), 
-                                   "std:", round(record.compare.std[i, j], 3))
-    }
-  }
-  
-  record.compare <- data.frame(record.compare)
-  
-  for (j in c(1:num.of.iteration)){
-    colnames(record.compare)[j] <-  paste("iteration:", iteration.numbers[j])
-  }
-  
-  for (j in c(1:num.of.iteration)){
-    colnames(record.compare)[j] <-  paste("iteration:", iteration.numbers[j])
-  }
-  
-  for (i in c(1:loop.num)){
-    rownames(record.compare)[i] <- paste("loop ", i)
-  }
-  
-  return(record.compare)
-}
+
+## note1: The definition of compare_outcomes is in function.R
+
+## note2: My function can take a vector of different iteration numbers, and return 
+## a merged result. And of course you can input just one iteration number, and it 
+## will return the result for only one iteration number.
+
+compare_outcomes(1000)
+compare_outcomes(10000)
+compare_outcomes(100000)
 
 iteration.numbers <- c(1000, 10000, 100000)
-m.compare.out <- compare_outcomes(iteration.numbers)
+compare_outcomes(iteration.numbers)
+
+## sometimes the code will generate error due to the log posterior
+## is near negative infinite. To solve this problem, I add a if 
+## if function. See function.R line 43, the definition of
+## run_metropolis_MCMC function
