@@ -1,5 +1,7 @@
 # HW-2-Master
 
+Author: Boxin Zhao
+
 Some instructions
 
 File Descriptions:
